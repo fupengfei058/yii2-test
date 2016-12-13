@@ -3,7 +3,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
-use yii\web\UploadedFile;
+//use yii\web\UploadedFile;
 
 class Contestant extends ActiveRecord
 {
@@ -38,6 +38,7 @@ class Contestant extends ActiveRecord
                 'extensions'=>['png', 'jpg', 'gif','jpeg'],'wrongExtension'=>'只能上传{extensions}类型图片！',
                 'maxSize'=>1024*1024*1024*2,'tooBig'=>'图片过大！',
                 'skipOnEmpty'=>false,'uploadRequired'=>'请上传图片！',
+                'checkExtensionByMimeType' => false,
                 'message'=>'上传失败！'
             ],
             ['desc','required','message' => '选手描述不能为空'],
@@ -48,8 +49,7 @@ class Contestant extends ActiveRecord
     public function upload()
     {
         if ($this->validate()) {
-            echo 222;exit;
-            $this->picList->saveAs('/runtime/uploads/' . $this->picList->baseName . '.' . $this->picList->extension);
+            $this->picList->saveAs(Yii::$app->basePath.'/runtime/uploads/' . $this->picList->baseName . '.' . $this->picList->extension);
             return true;
         } else {
             return false;
