@@ -3,7 +3,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
-use yii\web\UploadedFile;
+//use yii\web\UploadedFile;
 
 class Contestant extends ActiveRecord
 {
