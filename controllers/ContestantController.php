@@ -10,6 +10,24 @@ use yii\web\UploadedFile;
 
 class ContestantController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => 'yii\filters\PageCache',
+                'only' => ['index'],
+                'duration' => 60,
+                'variations' => [
+                    Yii::$app->language,
+                ],
+                'dependency' => [
+                    'class' => 'yii\caching\DbDependency',
+                    'sql' => 'SELECT COUNT(*) FROM vote_contestant',
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         $query = Contestant::find();
@@ -35,9 +53,12 @@ class ContestantController extends Controller
         if(Yii::$app->request->isPost && $contestant->load(Yii::$app->request->post())){
             $contestant->picList = UploadedFile::getInstance($contestant, 'picList');
             if($contestant->upload()){//Yii::$app->basePath.
-                $contestant->picList = json_encode('/runtime/uploads/' . $this->picList->baseName . '.' . $this->picList->extension);
-                $contestant->save();
-                return $this->redirect('index');
+                $contestant->picList = json_encode(Yii::$app->basePath.'/runtime/uploads/' . $contestant->picList->baseName . '.' . $contestant->picList->extension);
+                if($contestant->save()){
+                    return $this->redirect('./index.php?r=contestant/index');
+                }else{
+                    //var_dump($contestant->getErrors());
+                }
             }
         }
         return $this->render('add',['model' => $contestant]);
@@ -96,5 +117,12 @@ class ContestantController extends Controller
         if ($contestant->delete()){
             echo 'success';
         }
+    }
+
+    public function actionCookieTest(){
+        $cookie['username'] = 'fja';
+//         echo $cookie['username'];
+        $session['password'] = '552';
+//         echo $session['password'];
     }
 }
