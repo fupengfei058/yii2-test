@@ -5,6 +5,7 @@ class TestingApiCest
 {
     public function _before(\ApiTester $I)
     {
+        $I->wantTo('api test begin...');
     }
 
     public function _after(\ApiTester $I)
